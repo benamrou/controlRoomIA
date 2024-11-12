@@ -1,0 +1,7 @@
+{
+  "name": "oneWay",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
