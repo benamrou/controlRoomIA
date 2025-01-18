@@ -1,0 +1,83 @@
+<!-- div class="login-page" [@routerTransition] style="background-color: steelblue; color: black" -->
+<div class="login-page" [@routerTransition] style=" color: black">
+    <!-- Snow effect -->
+    <!--div *ngFor="let dummy of ' '.repeat(100).split('')" class="snowflake">*</div-->
+    <p-toast [style]="{'marginTop': '80px', 'width': '100%'}" position="top-left"></p-toast>
+    <!--p-messages  [enableService]="true" /-->
+
+    <p-dialog header="Store selection" [modal]="true" [(visible)]="multiStoreSelectionVisible" 
+              [draggable]="false" [position]="'bottom'" [style]="{ width: '25rem' }">
+    <div class="flex items-center gap-4 mb-4" style="padding-left: 20%;padding-top: 3%; font-size: small;">
+        <p-dropdown  appendTo="body"
+                    [options]="storesListDisplay" 
+                    [(ngModel)]="storeUserSelection" />
+            </div>
+            <ng-template pTemplate="footer">
+                <div style="border-top: 1px black solid">
+                    <button pButton pRipple severity="secondary" (click)="multiStoreSelectionVisible = false"
+                            style="width: 20%;justify-content: center;border-radius: 1em;margin-right: 1em;margin-top: 1em;">
+                        <span pButtonLabel>Cancel</span>
+                    </button>
+                    <button pButton pRipple severity="contrast" (click)="seletedStore()"
+                            style="width: 20%;justify-content: center;border-radius: 1em;">
+                        <span pButtonLabel>Enter</span>
+                    </button>
+                    
+                </div>
+        </ng-template>
+    </p-dialog>
+
+    <div class="limiter " id="cards">
+        <div style="text-align: center">
+            <img style="width: 20%" src="./assets/icons/oneWay_NoBackground.png" width="150px" class="user-avatar" (click)="showHideVersion()" />
+            <!--img style="float:right; margin-right: 5%; padding-top: 1%; width: 5%" src="./assets/icons/logo.png" width="150px" class="user-avatar" (click)="showHideVersion()" /-->
+        </div>
+        <div class="image-border container-login100" style="background-image: url(../../../assets/images/dept-counting.png); background-repeat:no-repeat; background-size: 100%;">
+            <div class="card wrap-login100">
+                <div class="login100-form-title">
+                    <span class="login100-form-title-1">
+                        INVENTORY COUNT
+                    </span>
+                </div>
+
+                <div class="login100-form validate-form" (ngSubmit)="onLoggedin()">
+                    <div class="wrap-input100  m-b-26" >
+                        <span class="label-input100">Username</span>
+                        <input  class="input100" [style]="{'width':'100%','font-size':'1.5vh', 'line-height':'2.7vh'}" 
+                                pInputText
+                                type="text" name="username" 
+                                [(ngModel)]="authentification.username" 
+                                autocapitalize="none" 
+                                placeholder="">
+                        <span class="focus-input100"></span>
+                    </div>
+
+                    <div class="wrap-input100 m-b-18" >
+                        <span class="label-input100" style="top:1.6em !important" id="Pass">Password</span>
+                        <p-password  [style]="{'width':'100%', 'font-family': 'Poppins-Regular', 'font-weight':'bold'}" 
+                                     [inputStyle]="{'width':'100%', 'padding': '0 10px', 'font-size':'1.5vh', 'line-height':'2.7vh'}" 
+                                     [feedback]="false" [(ngModel)]="authentification.password" 
+                                     placeholder="" [toggleMask]="true" 
+                                     (keydown)="enteringPassword($event)"/>
+                        <span class="focus-input100"></span>
+                    </div>
+
+
+                    <div class="container-login100-form-btn">
+                        <button (click)="onLoggedin()" class="card-icon login100-form-btn" >
+                            Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="width: 100%; background-color: red;
+            line-height: 5vh;color: white; 
+            font-weight:900;
+            font-size: xx-large;
+            text-align: center;
+            margin-top: 2vh;">
+            MEAT DEPARTMENT
+</div>

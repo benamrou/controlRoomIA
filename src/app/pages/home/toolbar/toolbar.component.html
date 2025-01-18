@@ -1,0 +1,33 @@
+<p-toolbar 
+    styleClass="bg-gray-900 shadow-3 toolbar">
+        <div class="row" style="width: 50%">
+            <div class="p-link inline-flex justify-content-center align-items-center text-white  hover:bg-white-alpha-10 transition-all transition-duration-200" 
+                style="padding:0.2em; z-index: 9999">
+                <i class="pi pi-angle-left text-5xl" (click)="quit()"></i>
+                <span class="p-link inline-flex text-xl hover:bg-white-alpha-10 transition-all transition-duration-200"  (click)="quit()">Quit</span>
+            </div>
+            <div class="align-items-center" style="padding-left: 4vw;">
+                <div class="separator" ></div>
+                <div class="inline-flex justify-content-center align-items-center text-white  "
+                     style="padding: 0.5em;padding-left: 6vw;width: 50%;">
+                    <i class="p-link pi  pi-objects-column text-xl hover:bg-white-alpha-10 transition-all transition-duration-200"></i>
+                    <span class="p-link inline-flex text-xl align-items-right hover:bg-white-alpha-10 transition-all transition-duration-200"  
+                        style="padding-left: 0.4em">Count</span>
+                    <i class="p-link pi  pi-history text-xl hover:bg-white-alpha-10 transition-all transition-duration-200" style="padding-left: 2vw"></i>
+                    <span class="p-link inline-flex text-xl align-items-right hover:bg-white-alpha-10 transition-all transition-duration-200"  
+                        style="padding-left: 0.4em; padding-right:1em">Recap'</span>
+                </div>
+            </div>
+        </div>
+        <div class="row"  style="width: 50%; justify-content: right;">
+            <div class="flex align-items-center gap-4" 
+                 style="padding-right: 4em; padding-left:1em; ">
+              <p-dropdown 
+                      [options]="storesListDisplay" [disabled]="true" 
+                      [(ngModel)]="selectedStore" />
+                <span class="font-bold text-bluegray-50">
+                    {{_userService.userInfo.username}}
+                </span>
+            </div>
+        </div>
+</p-toolbar>

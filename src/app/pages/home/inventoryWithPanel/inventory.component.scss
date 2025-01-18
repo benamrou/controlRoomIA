@@ -1,0 +1,252 @@
+
+$mainColor : #353534;
+
+.scanbutton {
+    position: absolute;
+    /*bottom: 3vw;
+    right: 1vw;
+    width: 10%;
+    height: 15%;*/
+    display: block !important;
+    z-index: 99999;
+
+    inset: 0;
+    background: url('../../../../assets/images/border_scanner.png');
+    background-repeat: no-repeat;
+    background-size: 100px;
+    margin-top: 20%;
+    margin-left:33%;
+    
+}
+
+.button-transparent {
+    --background: transparentize(100);
+    --background-hover: #404040;
+  }
+
+.button-square-white {
+  background-color: white;
+  box-shadow: 0px -5px 2px -2px rgba(0,0,0,0.5);
+  aspect-ratio: 1 / 1;
+  font-size: 1vw;
+  border: 1px solid black;
+  font-weight: 900;
+  color: black;
+
+  &:active {
+    background: gray; 
+    color: white;
+  }
+}
+.button-zero-white {
+  background-color: white;
+  box-shadow: 0px -5px 2px -2px rgba(0,0,0,0.5);
+  aspect-ratio: 1 / 0.5;
+  font-size: 1vw;
+  border: 1px solid black;
+  font-weight: 900;
+  color: black;
+
+  &:active {
+    background: gray; 
+    color: white;
+  }
+
+}
+  /** Put border around scan button **/
+  ion-fab-button {
+    --border-style: solid;
+    --border-width: 3px;
+    --border-color: var(--gray-800);
+ } 
+
+  
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    //background: #ffee10;
+    transition: .5s;
+    transform: scale(.9);
+    z-index: -1;
+  }
+  
+  button:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px $mainColor;
+  }
+  
+  button:hover {
+    color: darkslategrey;
+    box-shadow: 0 0 5px $mainColor;
+    text-shadow: 0 0 5px $mainColor;
+  }
+  
+
+  .scanbutton:hover::before {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px $mainColor;
+  }
+  
+  .scanbutton:hover {
+    color: darkslategrey;
+    box-shadow: 0 0 5px $mainColor;
+    text-shadow: 0 0 5px $mainColor;
+  }
+
+
+/* not selected TABVIEW */
+:host ::ng-deep .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  border-color: none;
+  background: white;
+  color: white;
+  font-size: small;
+}
+
+/* hover TABVIEW */
+:host ::ng-deep  .p-tabview .p-tabview-nav li:not(.p-highlight):not(.p-disabled):hover .p-tabview-nav-link {
+  background: orange;
+  border-color: brown;
+  color: #111827;
+}
+
+/* selected TABVIEW */
+:host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: #111827;
+  border-color: #111827;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav-btn.p-link {
+  color: #111827;
+}
+
+:host ::ng-deep .p-multiselect-label-container {
+  font-weight: 900;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-panels  {
+  min-height: 90%;
+  padding: 0em 0em 1em 1em;
+}
+
+:host ::ng-deep .p-card .p-card-content {
+  padding: 0em 0em 0em 0em;
+}
+
+:host ::ng-deep .p-card {
+  box-shadow: unset;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr.p-highlight {
+  border: 3px orange solid;
+  border-radius: 10px;
+  outline: 3px orange solid;
+  color: black;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+  outline: 1px gray solid;
+  color: black;
+}
+
+:host ::ng-deep button, input {
+  border-radius: 0.5em;
+  width: 120%;
+  justify-content: center;
+}
+
+ th {
+  color: black;
+  border-bottom: 1px black solid;
+  height: 60px;
+  background-color: white;
+}
+
+:host ::ng-deep .p-selectbutton .p-button.p-highlight {
+  background: $mainColor;
+  color: white;
+  padding-left:1em;
+}
+
+:host ::ng-deep .p-selectbutton .p-button {
+  font-size: smaller;
+  padding-left:1em;
+}
+
+:host ::ng-deep #fullCaseBtn .p-button {
+  width: 100%; height: 3em;
+  background: white; color: black;
+  border: 1px solid gray;
+  box-shadow: 0px -10px 10px -5px rgba(0,0,0,0.45);
+  text-align: center;
+  font-size: smaller;
+  font-weight: 900;
+
+  &:hover {
+    background: gray; 
+    color: white;
+  }
+}
+
+:host ::ng-deep #Case34Btn .p-button {
+  width: 100%; height: 3em;
+  background: white; color: black;
+  border: 1px solid gray;
+  box-shadow: 0px -10px 10px -5px rgba(0,0,0,0.45);
+  text-align: center;
+  font-size: smaller;
+  font-weight: 900;
+
+  &:hover {
+    background: gray; 
+    color: white;
+  }
+}
+:host ::ng-deep #Case12Btn .p-button {
+  width: 100%; height: 3em;
+  background: white; color: black;
+  border: 1px solid gray;
+  box-shadow: 0px -10px 10px -5px rgba(0,0,0,0.45);
+  text-align: center;
+  font-size: smaller;
+  font-weight: 900;
+
+  &:hover {
+    background: gray; 
+    color: white;
+  }
+}
+:host ::ng-deep #Case14Btn .p-button {
+  width: 100%; height: 3em;
+  background: white; color: black;
+  border: 1px solid gray;
+  box-shadow: 0px -10px 10px -5px rgba(0,0,0,0.45);
+  text-align: center;
+  font-size: smaller;
+  font-weight: 900;
+
+  &:hover {
+    background: gray; 
+    color: white;
+  }
+}
+:host ::ng-deep #emptyCaseBtn .p-button {
+  width: 100%; height: 3em;
+  background: white; color: black;
+  border: 1px solid gray;
+  box-shadow: 0px -10px 10px -5px rgba(0,0,0,0.45);
+  text-align: center;
+  font-size: small;
+  font-weight: 900;
+
+  &:hover {
+    background: gray; 
+    color: white;
+  }
+}
+
+
