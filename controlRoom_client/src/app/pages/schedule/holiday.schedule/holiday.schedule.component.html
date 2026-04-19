@@ -1,0 +1,325 @@
+<app-page-header [heading]="'Holiday schedule calendar'" [icon]="'fa-sun'"
+                 [waitMessage]="waitMessage" [screenID]="screenID"></app-page-header>
+                 
+
+<div class="content-section implementation" style="padding: 5px;">
+    <p-toast [style]="{marginTop: '80px'}" position="top-right"></p-toast>
+</div>
+
+
+<!-- Panel add new holiday schedule -->
+<p-dialog header="Add new holiday schedule" [visible]="displayAddHoliday" [modal]="true" [style]="{width: '50vw'}" [responsive]="true" [maximizable]="false">
+    <form [formGroup]="newHolidayForm" (ngSubmit)="addHoliday()">
+        <div class="row">
+            <div class="form-group row">
+                <span class="p-inputgroup-addon col-2" style="justify-content: left;">
+                    Holiday date
+                </span>
+                <p-calendar [(ngModel)]="newHolidayDate"  
+                            class="form-control col-10"
+                            dateFormat="mm/dd/yy"
+                            [style]="{'height': '35px', 'padding-left' : '5px', 'width' : '30%'}"
+                            [showIcon]="true" 
+                            appendTo="body" 
+                            formControlName="holidayDate_field"
+                            [showOnFocus]="true" [showOtherMonths]="true" ></p-calendar>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-6 row">
+                <span class="p-inputgroup-addon col-4" style="justify-content: left;">Period start
+                </span>
+                <p-calendar [(ngModel)]="newHolidayStart"  
+                            class="form-control col-7"
+                            dateFormat="mm/dd/yy"
+                            [style]="{'height': '35px', 'padding-left' : '5px', 'width' : '100%'}"
+                            [showIcon]="true" 
+                            appendTo="body" 
+                            formControlName="holidayStart_field"
+                            [showOnFocus]="true" [showOtherMonths]="true" ></p-calendar>
+            </div>
+
+            <div class="form-group col-6 row">
+                <span class="p-inputgroup-addon col-4" style="justify-content: left;">Period end
+                </span>
+                <p-calendar [(ngModel)]="newHolidayEnd"  
+                            class="form-control col-8"
+                            dateFormat="mm/dd/yy"
+                            [style]="{'height': '35px', 'padding-left' : '5px', 'width' : '100%'}"
+                            [showIcon]="true" 
+                            appendTo="body" 
+                            formControlName="holidayEnd_field"
+                            [showOnFocus]="true" [showOtherMonths]="true" ></p-calendar>
+            </div>
+        </div>
+        <p-footer>
+            <button  style="float: left; margin-bottom:0.5em; margin-top:1em" 
+                    pButton iconPos="right" type="button" 
+                    (click)="getTemplate()" icon="fas fa-file-excel-o" label="TEMPLATE" 
+                    label="TEMPLATE">
+            </button>
+            <div class="col" style="margin-right: 15px; text-align: right;">
+                <p-fileUpload #fileUpload mode="basic"  name="file" 
+                            style="margin-top: 0.3em; float: left"
+                            accept=".xlsx" 
+                            [showUploadButton]="true"
+                            chooseLabel="Browse"
+                            [auto]="true"
+                            [style]="{'font-size':'smaller', 'float':'left'}"
+                            (onSelect)="onSelect($event)"
+                            (onBeforeUpload)="onBeforeUpload($event)"
+                            (onUpload)="onUploadCompleted($event)"></p-fileUpload>
+            </div>
+            <button  style="float: right; margin-bottom:0.5em" 
+                    pButton icon="fas fa-check" iconPos="right"
+                    [disabled]="!newHolidayForm.valid || globalError.length !=0 || !_importService.wb"
+                    type="submit"
+                    (click)="loadHolidaySchedule()"
+                    label="LOAD">
+            </button>
+            <button style="float: right; margin-bottom:0.5em" 
+                    type="button" pButton icon="fas fa-times" iconPos="right" (click)="cancelNewHoliday()" 
+                    label="Cancel">
+            </button>
+            <span *ngIf="uploadedFiles.length > 0" style="margin-top: 1em;margin-left: 1em;font-weight: bold;color: crimson;">{{uploadedFiles[0].name}} </span>
+        </p-footer>
+    </form>
+    <div style="margin-top: 2em; background-color: gray" *ngIf="displayErrorAddHoliday">
+        <span style= "font-weight: bold; color: white; padding-left: 0.5em">Schedule file does not meet requirements:</span>
+        <p-table  #validateError [value]="globalError" sortMode="multiple" 
+                [rows]="5"  [rowsPerPageOptions]="[5,10,50]"
+                [paginator]="true" [pageLinks]="3" 
+                [columns]="['Holiday file verification result']"
+                selectionMode="single" 
+                [resizableColumns]="true" columnResizeMode="expand"
+                [responsive]="true" [totalRecords]="globalError.length"
+                [reorderableColumns]="true" scrollHeight="200px"
+                [autoLayout]="true" tableStyleClass="table-layout: auto;">
+            <!-- HEADER -->
+                <ng-template pTemplate="header">            
+                    <tr>
+                        <th pReorderableColumn pResizableColumn  style="background-color: deeppink;color: white;">
+                        Verification result
+                        </th>
+                    </tr>
+                </ng-template>
+            <!-- BODY -->
+                <ng-template pTemplate="body" let-rowData>
+                    <tr [pSelectableRow]="rowData">
+                        <td class="ui-resizable-column" [innerHTML]="rowData">
+                        </td>
+                    </tr>
+                </ng-template>
+        </p-table>
+        <i  class="FOOTER_Table" >{{globalError.length}} issues</i>
+    </div>
+</p-dialog>
+
+<!-- Panel REMOVE new holiday schedule -->
+<p-dialog header="Remove holiday schedule" [visible]="displayRemoveHoliday" [modal]="true" [style]="{width: '50vw'}" [responsive]="true" [maximizable]="false">
+    <form [formGroup]="removeHolidayForm" (ngSubmit)="removeHoliday()">
+        <div class="row">
+            <div class="form-group row">
+                <span class="p-inputgroup-addon col-2" style="justify-content: left;">
+                    Holiday date
+                </span>
+                <p-calendar [(ngModel)]="removeHolidayDate"  
+                            class="form-control col-10"
+                            dateFormat="mm/dd/yy"
+                            [style]="{'height': '35px', 'padding-left' : '5px', 'width' : '30%'}"
+                            [showIcon]="true" 
+                            appendTo="body" 
+                            formControlName="holidayDate_field"
+                            [showOnFocus]="true" [showOtherMonths]="true" ></p-calendar>
+            </div>
+        </div>
+        <p-footer>
+            <button  style="float: right; margin-top:3em" 
+                    pButton icon="fas fa-check" iconPos="right"
+                    [disabled]="!removeHolidayForm.valid"
+                    type="submit"
+                    (click)="executeRemoveHoliday()" 
+                    label="Remove">
+            </button>
+            <button style="float: right; margin-top:3em" 
+                    type="button" pButton icon="fas fa-times" iconPos="right" (click)="cancelRemoveHoliday()" 
+                    label="Cancel">
+            </button>
+        </p-footer>
+    </form>
+    <div style="margin-top: 5em" *ngIf="displayErrorAddHoliday">
+        <p-table  #validateError [value]="globalError" sortMode="multiple" 
+                [rows]="5"  [rowsPerPageOptions]="[5,10,50]"
+                [paginator]="true" [pageLinks]="3" 
+                [columns]="['Holiday file verification result']"
+                selectionMode="single" 
+                [resizableColumns]="true" columnResizeMode="expand"
+                [responsive]="true" [totalRecords]="globalError.length"
+                [reorderableColumns]="true" scrollHeight="200px"
+                [autoLayout]="true" tableStyleClass="table-layout: auto;">
+            <!-- HEADER -->
+                <ng-template pTemplate="header">            
+                    <tr>
+                        <th pReorderableColumn pResizableColumn  style="background-color: deeppink;color: white;">
+                        Verification result
+                        </th>
+                    </tr>
+                </ng-template>
+            <!-- BODY -->
+                <ng-template pTemplate="body" let-rowData>
+                    <tr [pSelectableRow]="rowData">
+                        <td class="ui-resizable-column" [innerHTML]="rowData">
+                        </td>
+                    </tr>
+                </ng-template>
+        </p-table>
+        <i  class="FOOTER_Table" >{{globalError.length}} issues</i>
+    </div>
+</p-dialog>
+
+<!-- Search Panel -->
+<div class="bbs_search_panel"  >
+    <span style="margin-right:2.2em; padding-left: 15px; font-weight: bolder">Supplier : </span>
+    <span style="overflow: hidden;width: 28%;line-height: 25px;align-self: center;">
+        <input type="text"  [(ngModel)]="searchCode" placeholder="  Enter a code or a description" 
+               style="width: 90%;margin-left: 10px;"/>     
+    </span>
+
+    <span style="font-weight: bolder">Holiday day : </span>
+    <p-calendar [(ngModel)]="holydayDay"  
+                [readonlyInput]="true"
+                dateFormat="mm/dd/yy"
+                [style]="{'height': '35px'}"
+                name="holydayDay" [showIcon]="true" 
+                [showOnFocus]="true" [showOtherMonths]="true" ></p-calendar>
+
+    <span class="pull-right" style="padding-right: 20px">
+        <button type="submit" pButton (click)="search()" icon="fas fa-search" label="SEARCH" 
+                [style]="{'height': '35px'}"
+                style="margin-right: 15px"></button>
+        <button type="submit" pButton (click)="search()" icon="fas fa-sync-alt" 
+                [style]="{'height': '35px'}"[disabled]="true"></button>
+    </span>
+</div>
+<div class="bbs_search_sub_panel"  >
+    <span style="margin-right:1.3em; padding-left: 15px; font-weight: bolder">Period start : </span>
+    <p-calendar [(ngModel)]="periodStart"  
+                [minDate]="dateTomorrow"
+                [readonlyInput]="true"
+                dateFormat="mm/dd/yy"
+                [style]="{'height': '35px'}"
+                name="scheduleStart" [showIcon]="true" 
+                [showOnFocus]="true" [showOtherMonths]="true"></p-calendar>
+
+    <span style="margin-left:11em; padding-left: 15px; font-weight: bolder">Period end : </span>
+    <p-calendar [(ngModel)]="periodEnd"  
+                [minDate]="dateTomorrow"
+                [readonlyInput]="true"
+                dateFormat="mm/dd/yy"
+                [style]="{'height': '35px'}"
+                name="scheduleEnd" [showIcon]="true" 
+                [showOnFocus]="true" [showOtherMonths]="true" ></p-calendar>
+</div>
+<p></p>
+
+<p-dialog header="Update completed" [visible]="displayUpdateCompleted" [modal]="true" [style]="{width: '50vw'}" [responsive]="true" [maximizable]="false">
+    <span>{{msgDisplayed}}</span>
+        <p-footer>
+            <button style="float: right; margin-bottom:0.5em" 
+                    type="button" pButton icon="fas fa-check" iconPos="right" (click)="displayUpdateCompleted=false" 
+                    label="Ok">
+            </button>
+        </p-footer>
+</p-dialog>
+
+<!-- Panel resul -->
+<!-- Result panel of the resarch --> 
+<!-- If more than one element retrieved elde assumed element selected  *ngIf="searchResult.length > 1" -->
+<div  item-width="400px" table-layout="fixed" *ngIf="searchResult !== null">
+
+        <p-table #result [value]="searchResult" sortMode="multiple" 
+        [rows]="5"  [rowsPerPageOptions]="[5,10,50]"
+        [paginator]="true" [pageLinks]="3" 
+        [columns]="columnsResult"
+        selectionMode="single" [(selection)]="selectedElement" 
+        [resizableColumns]="true" columnResizeMode="expand"
+        [responsive]="true" [totalRecords]="searchResult.length"
+        [reorderableColumns]="true" scrollHeight="400px"
+        (onRowSelect)="onRowSelect($event)"
+        [globalFilterFields]="['suppliercode', 'supplierdescription']"
+        [autoLayout]="true" tableStyleClass="table-layout: auto;">
+        
+       
+        <!-- FILTER -->
+        <ng-template pTemplate="caption">
+            <div class="table-header grid">
+                <div class="col-6">
+                    <span>
+                        <button type="button" pButton icon="fas fa-file" iconPos="left" 
+                            class="CSV_Button p-input-icon-left ml-auto"
+                            pTooltip="Export to EXCEL" [escape]="false"
+                            *ngIf="searchResult.length>0"
+                            label="CSV" (click)="result.exportCSV()" style="float:left">
+                        </button>
+                        <button type="button" pButton icon="fas fa-file" iconPos="left" 
+                            class="CSV_Button p-input-icon-left ml-auto"
+                            pTooltip="Export to EXCEL" [escape]="false"
+                            disabled *ngIf="searchResult.length==0"
+                            label="CSV" (click)="result.exportCSV()" style="float:left">
+                        </button>
+                        <button type="button" pButton  iconPos="left" 
+                            class="CSV_Button p-input-icon-left ml-auto"
+                            pTooltip="Remove a holiday schedule" [escape]="false"
+                            tooltipPosition="top"
+                            label="REMOVE" (click)="removeHoliday()" style="float:left">
+                        </button>
+                        <button type="button" pButton iconPos="left" 
+                            class="CSV_Button p-input-icon-left ml-auto"
+                            pTooltip="Add a holiday schedule" [escape]="false"
+                            tooltipPosition="bottom"
+                            label="ADD" (click)="addHoliday()" 
+                            style="float:left">
+                        </button>
+                    </span>
+                </div>
+                <div class="col-6" style="text-align: right;">
+                    <span class="p-input-icon-right">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="result.filterGlobal($any($event.target).value, 'contains')" placeholder="Type text to filter..." />
+                    </span>
+                </div>
+            </div>
+        </ng-template>
+        <!-- HEADER -->
+            <ng-template pTemplate="header">            
+                <tr>
+                    <th *ngFor="let col of columnsResult" [pSortableColumn]="col.field" pReorderableColumn pResizableColumn>
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                </tr>
+            </ng-template>
+        <!-- BODY -->
+            <ng-template pTemplate="body" let-rowData let-columns="columnsResult">
+                <tr [pSelectableRow]="rowData">
+                    <td *ngFor="let col of columnsResult" class="ui-resizable-column">
+                            {{rowData[col.field]}}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <i class="FOOTER_Table" >{{searchResult.length}} references</i>
+</div>
+<!-- List of Schedules -->
+<br>
+<!--div *ngIf="!selectedElement" style="text-align:center">
+    <button  disabled type="button" pButton icon="fa-file-o"  label="Review schedules" (click)="reviewSchedule()"></button>
+</div-->
+
+<!-- Validation -->
+<p></p>
+<p style='border-style: solid; border: black'></p>
+<div style="text-align:center" *ngIf="activeValidateButton">
+    <button  type="button" pButton icon="fas fa-dot-circle"  label="Validate" ></button>
+</div>
+<br>

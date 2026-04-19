@@ -1,0 +1,125 @@
+<app-page-header [heading]="'Syndigo Inquiry'" [icon]="'fa-barcode'" [screenID]="screenID"></app-page-header>
+
+<br>
+<div class="content-section implementation">
+    <p-toast [style]="{marginTop: '80px'}" position="top-right" sticky="false"></p-toast>
+</div>
+<br>
+
+<div style="width: 100%; ">
+    <span style="padding-left: 2em;">
+        <img itemprop="image" src="https://selfservice.syndigo.com/images/marketing/syn_tag_full_pos_color_rgb.svg" width="20%" alt="logo syndigo">
+        <button class="btn btn-secondary topmenubutton"  type="text"  style="margin-right:4em"
+                (click)="setting()" pTooltip="Settings" tooltipPosition="top" >
+                <span class="fa fa-bars"></span>
+        </button>
+    </span>
+</div>
+
+<p-dialog *ngIf="displaySettingOption" [(visible)]="displaySetting" header="Syndigo account information" width="100%">
+    <div class="formgrid grid">
+        <div class="field col-6 ">
+            <label class="font-bold" for="envid">Environment</label>
+            <input id="envid" pInputText type="text" disabled value="{{_syndigoService.syndigoEnv[0].SYNURL}}" class="text-base text-color surface-overlay p-2 border-3 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+        </div>
+        <div class="field col-6 ">
+            <label class="font-bold" for="assets">Assets</label>
+            <input id="assets" pInputText type="text" disabled value="{{_syndigoService.syndigoEnv[0].SYNASSETS}}" class="text-base text-color surface-overlay p-2 border-3 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+        </div>
+        <div class="field col-6">
+            <label class="font-bold" for="usernameSyndigo">Username</label>
+            <input id="usernameSyndigo" pInputText type="text" disabled value="{{_syndigoService.syndigoEnv[0].SYNUSER}}" rows="4" class="text-base text-color surface-overlay p-2 border-3 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+        </div>
+        <div class="field col-6">
+            <label class="font-bold" for="passSyndigo">Secret</label>
+            <textarea id="passSyndigo" pInputTextarea disabled value="{{_syndigoService.syndigoEnv[0].SYNSECRET}}" type="text" rows="4" class="text-base text-color surface-overlay p-2 border-3 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+
+            </textarea>
+        </div>
+        <div class="field col-6 ">
+            <label class="font-bold" for="companyid">CompanyId</label>
+            <input id="companyid" pInputText disabled value="{{_syndigoService.syndigoEnv[0].SYNCOMPANYID}}" type="text" class="text-base text-color surface-overlay p-2 border-3 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+        </div>
+        <div class="field col-6 ">
+            <label class="font-bold" for="vocabularyid">VocabularyId</label>
+            <input id="vocabularyid" pInputText disabled value="{{_syndigoService.syndigoEnv[0].SYNVOCID}}" type="text" class="text-base text-color surface-overlay p-2 border-3 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="displaySetting = false" label="Ok" styleClass="p-button-text"></p-button>
+    </ng-template>
+</p-dialog>
+<div id="wrapper" class="center" style="text-align: center; margin-top: 5em;">
+    <div style="width:70%; display: inline-block; text-align: left; box-shadow:1px 1px 1px 2px darkgrey" ui-grid-responsive ui-fluid ui-grid-pad>
+        <p-chips [(ngModel)]="values" 
+                 (keydown)="onKeyDown($event)"
+                 (paste)="onPaste($event)">
+        </p-chips>
+    </div>
+    <button *ngIf="searchResult.length > 0" style="left:2em" type="text" pButton (click)="saveJson()" label="JSON" pTooltip="Save Syndigo" tooltipPosition="top" >
+    </button>
+</div>
+<br>
+<div style="text-align: center;" >
+    <button type="text" pButton (click)="search()" label="search" [disabled]="!searchButtonEnable"></button>
+    <p></p>
+</div>
+
+<div *ngIf="searchResult.length > 0 && displayOverlayInfo" class="topRightDiv">
+    {{searchResult[0].syndigoData.heinensLayout[tabSelect].UPC}}<br>
+    <div style="font-size: small;">
+        {{searchResult[0].syndigoData.heinensLayout[tabSelect].productName}}
+    </div>
+</div>
+
+<p-tabView  *ngIf="searchResult.length > 0 " (onChange)="tabSelection($event)">
+    <p-tabPanel *ngFor="let result of searchResult[0].syndigoData.heinensLayout" [header]="result['UPC']" >
+        <h4 style="color: white;border-radius: 5px;background-color: #d81b60;left:0;right:0;padding: 10px 10px 10px 10px;font-size: large;margin-left: -0.4em;">
+            {{result.UPC}} {{result["productName"]}}
+        </h4>
+        <div class="grid">
+            <div class="col-12 header_cell">Source parties</div>
+            <div class="col-12 line_cell" style="font-weight: bold;">{{result["source"].join(' / ')}}</div>
+            
+            <div class="col-2 header_cell">UPC</div>
+            <div class="col-2 header_cell">Description</div>
+            <div class="col-2 header_cell">Weight</div>
+            <div class="col-2 header_cell">Height</div>
+            <div class="col-2 header_cell">Width</div>
+            <div class="col-2 header_cell">Depth</div>
+            <div class="col-2 line_cell">{{result["UPC"]}}</div>
+            <div class="col-2 line_cell">{{result["productName"]}}</div>
+            <div class="col-2 line_cell">{{result["weight"]}} {{result["weightUOM"]}}</div>
+            <div class="col-2 line_cell">{{result["height"]}} {{result["heightUOM"]}}</div>
+            <div class="col-2 line_cell">{{result["width"]}} {{result["widthUOM"]}}</div>
+            <div class="col-2 line_cell">{{result["depth"]}} {{result["depthUOM"]}}</div>
+
+            <div class="col-4 header_cell">Front</div>
+            <div class="col-4 header_cell">Back</div>
+            <div class="col-4 header_cell">Top</div>
+            <div class="col-4 line_cell">
+                <img alt="Image front" src="{{result['frontImageURL']}}?size=300&amp;fileType=png">
+            </div>
+            <div class="col-4 line_cell">
+                <img alt="Image front" src="{{result['backImageURL']}}?size=300&amp;fileType=png">
+            </div>
+            <div class="col-4 line_cell">
+                <img alt="Image front" src="{{result['topImageURL']}}?size=300&amp;fileType=png">
+            </div>
+
+            <div class="col-4 header_cell">Right</div>
+            <div class="col-4 header_cell">Left</div>
+            <div class="col-4 header_cell">Bottom</div>
+            <div class="col-4 line_cell">
+                <img alt="Image front" src="{{result['rightImageURL']}}?size=300&amp;fileType=png">
+            </div>
+            <div class="col-4 line_cell">
+                <img alt="Image front" src="{{result['leftImageURL']}}?size=300&amp;fileType=png">
+            </div>
+            <div class="col-4 line_cell">
+                <img alt="Image front" src="{{result['bottomImageURL']}}?size=300&amp;fileType=png">
+            </div>
+
+        </div>
+    </p-tabPanel>
+</p-tabView>
