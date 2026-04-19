@@ -1,2 +1,0 @@
-npx @capacitor/assets generate
-
